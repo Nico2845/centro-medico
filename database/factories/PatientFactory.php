@@ -9,7 +9,7 @@ class PatientFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->fullName(),
+            'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'phone' => fake()->phoneNumber(),
             'dui' => fake()->unique()->numerify('########-#'),
