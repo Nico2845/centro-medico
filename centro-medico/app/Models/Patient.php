@@ -4,25 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Appointment;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Patient extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'email',
-        'phone',
+        'user_id',
+        'first_name',
+        'last_name',
         'dui',
+        'phone',
+        'email',
         'birth_date',
         'address',
-    ];
-
-    protected $casts = [
-        'birth_date' => 'date',
     ];
 
     public function medicalRecord(): HasOne
@@ -30,13 +27,8 @@ class Patient extends Model
         return $this->hasOne(MedicalRecord::class);
     }
 
-    public function appointments(): HasMany
+    public function user(): BelongsTo
     {
-        return $this->hasMany(Appointment::class);
-    }
-
-    public function getAgeAttribute(): int
-    {
-        return \Carbon\Carbon::parse($this->birth_date)->age;
+        return $this->belongsTo(User::class);
     }
 }
