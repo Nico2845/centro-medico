@@ -2,27 +2,28 @@
 
 namespace App\Http\Requests;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class UpdatePatientRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->hasRole(['admin', 'asistente']);
+        $user = Auth::user();
+
+        return $user instanceof User && $user->hasAnyRole(['admin', 'asistente']);
     }
 
     public function rules(): array
     {
-        
-        $patientId = $this->route('patient') ? $this->route('patient')->id : null;
-
         return [
-            'name' => 'required|string|max:255',
-            'dui' => 'required|string|max:10|unique:patients,dui,' . $patientId,
-            'phone' => 'nullable|string|max:20',
-            'email' => 'nullable|email|max:255|unique:patients,email,' . $patientId,
-            'birth_date' => 'nullable|date|before_or_equal:today',
-            'address' => 'nullable|string',
+            'name'       => 'sometimes|string|max:255',
+            'email'      => 'sometimes|email|unique:patients,email,' . $this->route('patient'),
+            'phone'      => 'sometimes|string|max:20',
+            'dui'        => 'sometimes|string|unique:patients,dui,' . $this->route('patient'),
+            'birth_date' => 'sometimes|date',
+            'address'    => 'sometimes|string',
         ];
     }
 }

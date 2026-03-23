@@ -3,67 +3,44 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Patient;
 use App\Http\Requests\StorePatientRequest;
 use App\Http\Requests\UpdatePatientRequest;
+use App\Models\Patient;
 
 class PatientController extends Controller
 {
     public function index()
     {
-        $patients = Patient::with('medicalRecord')->paginate(10);
-        
-        return response()->json([
-            'success' => true,
-            'data' => $patients
-        ]);
+        return response()->json(Patient::with('medicalRecord')->get());
     }
 
     public function store(StorePatientRequest $request)
     {
-        $this->authorize('create', Patient::class);
-        
         $patient = Patient::create($request->validated());
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Paciente creado correctamente',
-            'data' => $patient
-        ], 201);
+        return response()->json($patient, 201);
     }
 
-    public function show(Patient $patient)
+    public function show($id)
     {
-        $patient->load('medicalRecord');
+        $patient = Patient::with('medicalRecord', 'appointments.doctor')->findOrFail($id);
 
-        return response()->json([
-            'success' => true,
-            'data' => $patient
-        ]);
+        return response()->json($patient);
     }
 
-    public function update(UpdatePatientRequest $request, Patient $patient)
+    public function update(UpdatePatientRequest $request, $id)
     {
-        $this->authorize('update', $patient);
-        
+        $patient = Patient::findOrFail($id);
         $patient->update($request->validated());
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Paciente actualizado correctamente',
-            'data' => $patient
-        ]);
+        return response()->json($patient);
     }
 
-    public function destroy(Patient $patient)
+    public function destroy($id)
     {
-        $this->authorize('delete', $patient);
-        
+        $patient = Patient::findOrFail($id);
         $patient->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Paciente eliminado correctamente'
-        ]);
+        return response()->json(['message' => 'Paciente eliminado']);
     }
 }

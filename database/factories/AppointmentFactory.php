@@ -13,7 +13,7 @@ class AppointmentFactory extends Factory
         return [
             'patient_id' => Patient::factory(),
             'user_id' => User::factory(),
-            'appointment_date' => fake()->dateTimeBetween('now', '+3 months')->format('Y-m-d'),
+            'appointment_date' => fake()->dateTimeBetween('-30 days', '+30 days')->format('Y-m-d'),
             'appointment_time' => fake()->randomElement(['08:00', '09:00', '10:00', '11:00', '14:00', '15:00', '16:00']),
             'status' => fake()->randomElement(['pending', 'confirmed', 'cancelled', 'completed']),
             'notes' => fake()->sentence(),
