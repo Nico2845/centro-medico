@@ -21,20 +21,7 @@ class StoreAppointmentRequest extends FormRequest
             'patient_id' => 'required|exists:patients,id',
             'user_id' => 'required|exists:users,id',
             'appointment_date' => 'required|date',
-            'appointment_time' => [
-                'required',
-                'date_format:H:i,H:i:s',
-                function ($attribute, $value, $fail) {
-                    $exists = \App\Models\Appointment::where('user_id', $this->user_id)
-                        ->where('appointment_date', $this->appointment_date)
-                        ->where('appointment_time', $value)
-                        ->exists();
-
-                    if ($exists) {
-                        $fail('El médico ya tiene una cita agendada en ese horario.');
-                    }
-                },
-            ],
+            'appointment_time' => 'sometimes|date_format:H:i',
             'status' => 'sometimes|in:pending,confirmed,cancelled,completed',
             'notes' => 'nullable|string',
         ];
