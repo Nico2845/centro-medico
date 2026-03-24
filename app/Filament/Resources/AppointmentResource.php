@@ -107,8 +107,18 @@ class AppointmentResource extends Resource
                                     return;
                                 }
 
+                                \Illuminate\Support\Facades\Log::info('record route', [
+                                    'record' => request()->route('record'),
+                                    'type' => gettype(request()->route('record')),
+                                ]);
+
                                 // Validación de duplicados
-                                $recordId = request()->route('record');
+                                $recordId = null;
+
+                                $url = request()->headers->get('referer') ?? request()->url();
+                                if (preg_match('/\/(\d+)\/edit/', $url, $matches)) {
+                                    $recordId = (int) $matches[1];
+                                }
 
                                 $exists = Appointment::where('user_id', $doctorId)
                                     ->where('appointment_date', $date)
