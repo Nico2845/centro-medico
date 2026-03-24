@@ -31,37 +31,38 @@ class DatabaseSeeder extends Seeder
         $doctors = User::factory(5)->create()->each(function ($doctor) use ($doctorRole) {
             $doctor->assignRole($doctorRole);
 
-            // Cada doctor tiene 3 horarios
+            // Cada doctor tiene 4 horarios para tener ≥20 doctor_schedules
             $days = collect(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'])
-                ->shuffle()->take(3);
+                ->shuffle()->take(4);
 
             foreach ($days as $day) {
                 DoctorSchedule::create([
-                    'user_id'    => $doctor->id,
+                    'user_id'     => $doctor->id,
                     'day_of_week' => $day,
-                    'start_time' => '08:00',
-                    'end_time'   => '11:00',
+                    'start_time'  => fake()->randomElement(['08:00', '09:00']),
+                    'end_time'    => fake()->randomElement(['12:00', '13:00']),
                 ]);
             }
         });
 
         // Crear 3 asistentes
-        $assistants = User::factory(3)->create()->each(function ($assistant) use ($assistantRole) {
+        User::factory(3)->create()->each(function ($assistant) use ($assistantRole) {
             $assistant->assignRole($assistantRole);
         });
 
-        // Crear 20 pacientes con expediente
-        $patients = Patient::factory(20)->create()->each(function ($patient) {
+        // Crear 25 pacientes, cada uno con expediente médico
+        $patients = Patient::factory(25)->create()->each(function ($patient) {
             MedicalRecord::factory()->create([
                 'patient_id' => $patient->id,
             ]);
         });
 
-        // Crear 30 citas
-        foreach (range(1, 30) as $i) {
+        // Crear 50 citas repartidas entre pasado y futuro (para gráfico de barras)
+        foreach (range(1, 50) as $i) {
             Appointment::factory()->create([
-                'patient_id' => $patients->random()->id,
-                'user_id'    => $doctors->random()->id,
+                'patient_id'       => $patients->random()->id,
+                'user_id'          => $doctors->random()->id,
+                'appointment_date' => fake()->dateTimeBetween('-30 days', '+30 days')->format('Y-m-d'),
             ]);
         }
     }

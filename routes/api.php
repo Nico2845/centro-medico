@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\PatientController;
+use App\Http\Controllers\Api\AppointmentController;
+use App\Http\Controllers\Api\MedicalRecordController;
 
 Route::post('/login', function (\Illuminate\Http\Request $request) {
     $request->validate([
@@ -20,8 +23,18 @@ Route::post('/login', function (\Illuminate\Http\Request $request) {
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
+    // Usuarios
     Route::get('/users', [UserController::class, 'index']);
     Route::post('/users', [UserController::class, 'store']);
     Route::put('/users/{id}', [UserController::class, 'update']);
     Route::delete('/users/{id}', [UserController::class, 'destroy']);
+
+    // Pacientes
+    Route::apiResource('patients', PatientController::class);
+
+    // Citas
+    Route::apiResource('appointments', AppointmentController::class);
+
+    // Expedientes Médicos
+    Route::apiResource('medical-records', MedicalRecordController::class);
 });

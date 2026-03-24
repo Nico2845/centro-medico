@@ -2,23 +2,26 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider;
+use App\Models\Patient;
+use App\Models\MedicalRecord;
+use App\Policies\PatientPolicy;
+use App\Policies\MedicalRecordPolicy;
 
-class AppServiceProvider extends ServiceProvider
+class AppServiceProvider extends AuthServiceProvider 
 {
-    /**
-     * Register any application services.
-     */
+    protected $policies = [
+        Patient::class => PatientPolicy::class,
+        MedicalRecord::class => MedicalRecordPolicy::class,
+    ];
+
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        //
+        $this->registerPolicies(); 
     }
 }
