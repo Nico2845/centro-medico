@@ -34,6 +34,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Citas
     Route::apiResource('appointments', AppointmentController::class);
+    Route::get('/doctors/{id}/appointments', [AppointmentController::class, 'byDoctor']);
 
     // Expedientes Médicos
     Route::apiResource('medical-records', MedicalRecordController::class);

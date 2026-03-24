@@ -38,6 +38,15 @@ class AppointmentController extends Controller
         return response()->json($appointment->load('patient', 'doctor'));
     }
 
+    public function byDoctor($id)
+    {
+        $appointments = Appointment::with('patient', 'doctor')
+            ->where('user_id', $id)
+            ->get();
+
+        return response()->json($appointments);
+    }
+
     public function destroy($id)
     {
         $appointment = Appointment::findOrFail($id);

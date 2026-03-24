@@ -13,6 +13,7 @@ class AppServiceProvider extends AuthServiceProvider
     protected $policies = [
         Patient::class => PatientPolicy::class,
         MedicalRecord::class => MedicalRecordPolicy::class,
+        Appointment::class => AppointmentPolicy::class,
     ];
 
     public function register(): void
