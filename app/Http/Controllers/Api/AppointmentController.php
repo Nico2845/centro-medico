@@ -65,7 +65,7 @@ class AppointmentController extends Controller
 
         return response()->json($appointment->load('patient', 'doctor'));
     }
-    
+
     public function byDoctor($id)
     {
         $appointments = Appointment::with('patient', 'doctor')
